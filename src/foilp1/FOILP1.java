@@ -39,13 +39,11 @@ public class FOILP1 implements Executable {
 
 
 
-        System.out.println("Liste des instances : ");
-        listerInstance(liste);
+       
 
 
 
-
-        System.out.println("________________________________");
+        System.out.println("\n--------FOILP1------");
         Literal literal_pos = new Literal(
                 liste_attribut.get(liste_attribut.size() - 1).name(),
                 liste_attribut.get(liste_attribut.size() - 1).value(0)
@@ -82,7 +80,6 @@ public class FOILP1 implements Executable {
 
             }
             regles_apprises.add(regle);
-            System.out.println("R"+cmp+" => SI "+regle+" ALORS "+literal_pos);
             //retirerListeLiteraux(listeLiteraux,regleGenerale);
             //System.out.println("Etat des positifs " + regleGenerale);
 
@@ -99,9 +96,8 @@ public class FOILP1 implements Executable {
 
 
         }
-        System.out.println("________________________________");
 
-        listerInstanceVerifiantRegles(liste,regles_apprises);
+        listerInstanceVerifiantRegles(liste,regles_apprises,literal_pos);
     }
 
     public static EnsembleInstance getEnsembleInstance(ArrayList<Instance> liste_instance) {
@@ -264,7 +260,7 @@ public class FOILP1 implements Executable {
         }
     }
 
-    public static void listerInstanceVerifiantRegles(ArrayList<Instance> listeInstances, ArrayList<Regle> listeRegles) {
+    public static void listerInstanceVerifiantRegles(ArrayList<Instance> listeInstances, ArrayList<Regle> listeRegles, Literal literal_pos) {
 
 
         for(int i = 0 ; i < listeInstances.size(); i++) {
@@ -273,14 +269,13 @@ public class FOILP1 implements Executable {
 
                 if(listeRegles.get(j).instanceVerfieRegle(listeInstances.get(i))) {
                     listeRegles.get(j).setNbrRegleCouvert(listeRegles.get(j).getNbrRegleCouvert()+1);
-                    System.out.println((i+1)+" -> R"+(j+1));
                 }
             }
         }
-
-        System.out.println("______________________");
+        System.out.println("Rules :");
         for(int i = 0; i < listeRegles.size(); i++) {
-            System.out.println("R"+(i+1)+" = "+listeRegles.get(i).getNbrRegleCouvert());
+            System.out.println("R"+(i+1)+" : SI "+listeRegles.get(i)+" ALORS "+literal_pos+", Positives="+listeRegles.get(i).getNbrRegleCouvert());
+
         }
 
         int cmp = 0;
@@ -289,7 +284,7 @@ public class FOILP1 implements Executable {
                 cmp++;
             }
         }
-        System.out.println("Total des positives : "+cmp);
+        System.out.println("\npositive covered : "+cmp);
     }
 
     public static void retirerInstanceRegle(Regle regle, ArrayList<Instance> listeInstances) {

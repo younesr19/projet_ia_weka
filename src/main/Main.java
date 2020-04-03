@@ -25,9 +25,8 @@ public class Main {
 			FOILP2.setEntropyThreshold(entropyThreshold);
 			FOILP2.setMinimumInstances(minimumInstances);
 		}
-
-		new FOILP1(filename).execute();
 		new FOILP2(filename).execute();
+		new FOILP1(filename).execute();
 	}
 
 	/**
