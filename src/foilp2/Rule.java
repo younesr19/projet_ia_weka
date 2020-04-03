@@ -34,7 +34,7 @@ public class Rule {
                 .collect(Collectors.joining(" ET ", "", ""));
 
         return "SI " + mapAsString
-                + " ALORS " + Node.getPositiveAttribut() + "=" + Node.getPositiveValue()
+                + " ALORS " + Node.getPositiveAttribut() + " = " + Node.getPositiveValue()
                 + ", Positives=" + positiveInstances
                 + ", Negatives=" + negativeInstances;
     }

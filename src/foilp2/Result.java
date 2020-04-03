@@ -34,7 +34,7 @@ public class Result {
         int positiveCovered = this.rules.stream().map(Rule::getPositiveInstances).reduce(0, Integer::sum);
         int negativeCovered = this.rules.stream().map(Rule::getNegativeInstances).reduce(0, Integer::sum);
 
-        return "Rules : "
+        return "Rules : \n"
                 + str.toString() + "\n"
                 + "positive covered : " + positiveCovered + "(" + (positiveCovered * 100 / (float)totalPositives) + "%, we would like this close to 100% to cover most of positive instances)\n"
                 + "negative covered : " + negativeCovered + "(" + (negativeCovered * 100 / (float)totalNegatives) + "%, we would like this close to 0% to cover no negative instances)";

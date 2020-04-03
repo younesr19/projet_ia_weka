@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Node {
 
-    private static final float ENTROPY_THRESHOLD = 0.5f;
+    private static final float ENTROPY_THRESHOLD = 0.55f;
     private static final float MINIMUM_INSTANCES = 0.005f; // in pourcentage
 
     private static float MINIMUM_INSTANCES_PER_LEAF;
@@ -36,7 +36,7 @@ public class Node {
         // if we do not have anymore remainingInstances
         // or too few positive instances
         // then return;
-        if(remainingInstances.size() == 0) {
+        if(remainingInstances.size() == 0 || getNbPositive(remainingInstances) < MINIMUM_INSTANCES_PER_LEAF) {
             return;
         }
 
@@ -53,9 +53,8 @@ public class Node {
         }
 
         // if we do not have anymore attributes
-        // or too few positive instances
         // then return;
-        if(remainingAttributs.size() == 0 || getNbPositive(remainingInstances) < MINIMUM_INSTANCES_PER_LEAF) {
+        if(remainingAttributs.size() == 0) {
             return;
         }
 
