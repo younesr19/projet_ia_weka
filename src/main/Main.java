@@ -2,7 +2,6 @@ package main;
 
 import foilp1.FOILP1;
 import foilp2.FOILP2;
-import foilp2.Node;
 
 import java.io.File;
 import java.io.IOException;

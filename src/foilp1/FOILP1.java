@@ -1,6 +1,5 @@
 package foilp1;
 
-import main.Executable;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -10,7 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
-public class FOILP1 implements Executable {
+public class FOILP1 {
 
     public final String filename;
 
@@ -18,7 +17,6 @@ public class FOILP1 implements Executable {
         this.filename = filename;
     }
 
-    @Override
     public void execute() throws IOException {
 
         // read file

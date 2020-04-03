@@ -1,6 +1,5 @@
 package foilp2;
 
-import main.Executable;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -11,7 +10,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class FOILP2 implements Executable {
+public class FOILP2 {
 
     private static float ENTROPY_THRESHOLD = 0.55f;
     private static float MINIMUM_INSTANCES = 0.005f; // in pourcentage
@@ -22,7 +21,6 @@ public class FOILP2 implements Executable {
         this.filename = filename;
     }
 
-    @Override
     public void execute() throws IOException {
 
         System.out.println("\n--------FOILP2------");
