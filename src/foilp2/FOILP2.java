@@ -13,6 +13,9 @@ import java.util.stream.Collectors;
 
 public class FOILP2 implements Executable {
 
+    private static float ENTROPY_THRESHOLD = 0.55f;
+    private static float MINIMUM_INSTANCES = 0.005f; // in pourcentage
+
     private final String filename;
 
     public FOILP2(final String filename) {
@@ -129,5 +132,21 @@ public class FOILP2 implements Executable {
         });
 
         return instances;
+    }
+
+    public static float getEntropyThreshold() {
+        return ENTROPY_THRESHOLD;
+    }
+
+    public static void setEntropyThreshold(float entropyThreshold) {
+        ENTROPY_THRESHOLD = entropyThreshold;
+    }
+
+    public static float getMinimumInstances() {
+        return MINIMUM_INSTANCES;
+    }
+
+    public static void setMinimumInstances(float minimumInstances) {
+        MINIMUM_INSTANCES = minimumInstances;
     }
 }

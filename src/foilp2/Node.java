@@ -5,9 +5,6 @@ import java.util.stream.Collectors;
 
 public class Node {
 
-    private static final float ENTROPY_THRESHOLD = 0.55f;
-    private static final float MINIMUM_INSTANCES = 0.005f; // in pourcentage
-
     private static float MINIMUM_INSTANCES_PER_LEAF;
     private static String POSITIVE_VALUE;
     private static String POSITIVE_ATTRIBUT;
@@ -25,7 +22,7 @@ public class Node {
     public Node(final Node parent, String positiveAttribut, String positiveValue, int totalInstance, Result result) {
         this.parent = parent;
         litterals = new LinkedHashMap<>();
-        MINIMUM_INSTANCES_PER_LEAF = MINIMUM_INSTANCES * totalInstance;
+        MINIMUM_INSTANCES_PER_LEAF = FOILP2.getMinimumInstances() * totalInstance;
         POSITIVE_ATTRIBUT = positiveAttribut;
         POSITIVE_VALUE = positiveValue;
         this.result = result;
@@ -47,7 +44,7 @@ public class Node {
 
         // if the current entropy is lower than ENTROPY_THRESHOLD
         // we think this is sufficient
-        if(getEntropy(getNbPositive(remainingInstances), getNbNegative(remainingInstances)) < ENTROPY_THRESHOLD && getNbPositive(remainingInstances) > getNbNegative(remainingInstances)) {
+        if(getEntropy(getNbPositive(remainingInstances), getNbNegative(remainingInstances)) < FOILP2.getEntropyThreshold() && getNbPositive(remainingInstances) > getNbNegative(remainingInstances)) {
             result.addRule(new Rule(this.litterals, getNbPositive(remainingInstances), getNbNegative(remainingInstances)));
             return;
         }
