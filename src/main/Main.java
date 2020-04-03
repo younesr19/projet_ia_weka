@@ -1,6 +1,7 @@
 package main;
 
 import foilp1.FOILP1;
+import foilp2.FOILP2;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class Main {
 
 		String filename = verifArguments(args);
 		new FOILP1(filename).execute();
+		new FOILP2(filename).execute();
 
 	}
 
