@@ -5,10 +5,13 @@ import java.util.stream.Collectors;
 
 public class Node {
 
-    private static final float ENTROPY_THRESHOLD = 0.6f;
-    private static float MINIMUM_INSTANCES;
+    private static final float ENTROPY_THRESHOLD = 0.5f;
+    private static final float MINIMUM_INSTANCES = 0.005f; // in pourcentage
+
+    private static float MINIMUM_INSTANCES_PER_LEAF;
     private static String POSITIVE_VALUE;
     private static String POSITIVE_ATTRIBUT;
+    private static Result result;
 
     private Node parent;
     private List<Node> children = new ArrayList<>();
@@ -19,81 +22,49 @@ public class Node {
         this.litterals = litterals;
     }
 
-    public Node(final Node parent, String positiveAttribut, String positiveValue, int minimumInstancesPerLeaf) {
+    public Node(final Node parent, String positiveAttribut, String positiveValue, int totalInstance, Result result) {
         this.parent = parent;
         litterals = new LinkedHashMap<>();
-        MINIMUM_INSTANCES = minimumInstancesPerLeaf;
+        MINIMUM_INSTANCES_PER_LEAF = MINIMUM_INSTANCES * totalInstance;
         POSITIVE_ATTRIBUT = positiveAttribut;
         POSITIVE_VALUE = positiveValue;
+        this.result = result;
     }
 
-    public List<String> execute(List<Attribut> remainingAttributs, final List<Instance> remainingInstances) {
-
-//        System.out.println("---------- remainingInstances ------------");
-//        remainingInstances.forEach(System.out::println);
-
-//        int p = 0;
-//        int N = 0;
-//        for(Instance instance : remainingInstances) {
-//            if(instance.isPositive()) p++;
-//            else N++;
-//        }
-//        System.out.println("p=" + p + ", n=" + N);
+    public void execute(List<Attribut> remainingAttributs, final List<Instance> remainingInstances) {
 
         // if we do not have anymore remainingInstances
         // or too few positive instances
         // then return;
-        if(remainingInstances.size() == 0 || getNbPositive(remainingInstances) < MINIMUM_INSTANCES) {
-//            System.out.println("no more remainingInstances to work on");
-//            System.out.println("---------------");
-//            printRule(remainingInstances);
-            return Collections.emptyList();
+        if(remainingInstances.size() == 0) {
+            return;
         }
-
-//        System.out.println("value=" + Math.abs(getNbPositive(remainingInstances) - getNbNegative(remainingInstances)) * 100 / remainingInstances.size());
 
         // if we do not hav anymore positive cases, then return
         if(getNbPositive(remainingInstances) == 0) {
-//            System.out.println("no more positiv cases");
-//            System.out.println("---------------");
-            return Collections.emptyList();
+            return;
         }
+
         // if the current entropy is lower than ENTROPY_THRESHOLD
         // we think this is sufficient
         if(getEntropy(getNbPositive(remainingInstances), getNbNegative(remainingInstances)) < ENTROPY_THRESHOLD && getNbPositive(remainingInstances) > getNbNegative(remainingInstances)) {
-//            System.out.println("new rule");
-//            System.out.println("------rule---------");
-            return new ArrayList<String>(){{ add(getRule(remainingInstances)); }};
+            result.addRule(new Rule(this.litterals, getNbPositive(remainingInstances), getNbNegative(remainingInstances)));
+            return;
         }
 
-        // if we do not have anymore attributes, then print the rule
-        if(remainingAttributs.size() == 0) {
-//            System.out.println("no more attributs to work on");
-//            printRule(remainingInstances);
-//            System.out.println("---------------");
-            return Collections.emptyList();
+        // if we do not have anymore attributes
+        // or too few positive instances
+        // then return;
+        if(remainingAttributs.size() == 0 || getNbPositive(remainingInstances) < MINIMUM_INSTANCES_PER_LEAF) {
+            return;
         }
-
-//        String mapAsString = this.litterals.keySet().stream()
-//                .map(key -> key + "=" + this.litterals.get(key))
-//                .collect(Collectors.joining(", ", "{", "}"));
-//
-//        System.out.println("CURRENT:" + mapAsString
-//                + ", Positives=" + getNbPositive(remainingInstances)
-//                + ", Negatives=" + getNbNegative(remainingInstances));
 
         // choose the best attribute to continue
-//        System.out.println("before gain");
-//        remainingAttributs.forEach(System.out::println);
         remainingAttributs.forEach(a -> setGain(a, remainingInstances));
         remainingAttributs = remainingAttributs
                 .stream()
                 .sorted(Comparator.comparingDouble(Attribut::getGain))
                 .collect(Collectors.toList());
-
-//        System.out.println("sort");
-//        remainingAttributs.forEach(System.out::println);
-//        System.out.println("attribut chosen : " + remainingAttributs.get(0).getName() + " with gain=" + remainingAttributs.get(0).getGain());
 
         final Attribut currentAttribut = remainingAttributs.get(0);
 
@@ -118,10 +89,8 @@ public class Node {
             });
 
 
-            rulesFound.addAll(n.execute(updatedAttributs, updatedInstances));
+            n.execute(updatedAttributs, updatedInstances);
         }
-
-        return rulesFound;
     }
 
     private void setGain(Attribut attribut, List<foilp2.Instance> instances) {
@@ -199,6 +168,14 @@ public class Node {
                 + " ALORS " + POSITIVE_ATTRIBUT + "=" + POSITIVE_VALUE
                 + ", Positives=" + getNbPositive(instances)
                 + ", Negatives=" + getNbNegative(instances);
+    }
+
+    public static String getPositiveValue() {
+        return POSITIVE_VALUE;
+    }
+
+    public static String getPositiveAttribut() {
+        return POSITIVE_ATTRIBUT;
     }
 
     public Node getParent() {

@@ -39,14 +39,11 @@ public class FOILP2 implements Executable {
                 .sorted(Comparator.comparingDouble(Attribut::getGain))
                 .collect(Collectors.toList());
 
+        Result result = new Result(Node.getNbPositive(instances), Node.getNbNegative(instances));
+        Node node = new Node(null, lastAttribut.getName(), positiveValue, instances.size(), result);
+        node.execute(attributs, instances);
 
-        Node node = new Node(null, lastAttribut.getName(), positiveValue, instances.size() / 100);
-        List<String> rulesFound = node.execute(attributs, instances);
-
-        for(int i = 0; i < rulesFound.size(); i++) {
-            System.out.println("R" + (i + 1) + " : " + rulesFound.get(i));
-        }
-        System.out.println("\n" + rulesFound.size() + " rules found in total.");
+        System.out.println(result.toString());
     }
 
     private String getPositiveValue(final Attribut lastAttribut) {
