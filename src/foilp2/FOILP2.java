@@ -22,7 +22,7 @@ public class FOILP2 implements Executable {
     @Override
     public void execute() throws IOException {
 
-        System.out.println("--------FOILP2------");
+        System.out.println("\n--------FOILP2------");
 
         // get the positive value we are looking for
         Attribut lastAttribut = this.getLastAttribut();
@@ -40,9 +40,13 @@ public class FOILP2 implements Executable {
                 .collect(Collectors.toList());
 
 
-        Node node = new Node(null, positiveValue);
-        int nbRulesFound = node.execute(attributs, instances);
-        System.out.println(nbRulesFound + " rules found.");
+        Node node = new Node(null, lastAttribut.getName(), positiveValue, instances.size() / 100);
+        List<String> rulesFound = node.execute(attributs, instances);
+
+        for(int i = 0; i < rulesFound.size(); i++) {
+            System.out.println("R" + (i + 1) + " : " + rulesFound.get(i));
+        }
+        System.out.println("\n" + rulesFound.size() + " rules found in total.");
     }
 
     private String getPositiveValue(final Attribut lastAttribut) {

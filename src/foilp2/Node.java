@@ -5,56 +5,73 @@ import java.util.stream.Collectors;
 
 public class Node {
 
-    private static final float ENTROPY_THRESHOLD = 0.8f;
+    private static final float ENTROPY_THRESHOLD = 0.6f;
+    private static float MINIMUM_INSTANCES;
     private static String POSITIVE_VALUE;
+    private static String POSITIVE_ATTRIBUT;
 
     private Node parent;
     private List<Node> children = new ArrayList<>();
     private Map<String, String> litterals;
-    private String attr = "";
 
-    public Node(final Node parent, final Map<String, String> litterals, final String attr) {
+    public Node(final Node parent, final Map<String, String> litterals) {
         this.parent = parent;
         this.litterals = litterals;
-        this.attr = attr;
     }
 
-    public Node(final Node parent, String positiveValue) {
+    public Node(final Node parent, String positiveAttribut, String positiveValue, int minimumInstancesPerLeaf) {
         this.parent = parent;
-        litterals = new HashMap<>();
+        litterals = new LinkedHashMap<>();
+        MINIMUM_INSTANCES = minimumInstancesPerLeaf;
+        POSITIVE_ATTRIBUT = positiveAttribut;
         POSITIVE_VALUE = positiveValue;
     }
 
-    public int execute(List<Attribut> remainingAttributs, final List<Instance> remainingInstances) {
+    public List<String> execute(List<Attribut> remainingAttributs, final List<Instance> remainingInstances) {
 
 //        System.out.println("---------- remainingInstances ------------");
 //        remainingInstances.forEach(System.out::println);
 
-        // if we do not have anymore remainingInstances, then print the rule
-        if(remainingInstances.size() == 0) {
+//        int p = 0;
+//        int N = 0;
+//        for(Instance instance : remainingInstances) {
+//            if(instance.isPositive()) p++;
+//            else N++;
+//        }
+//        System.out.println("p=" + p + ", n=" + N);
+
+        // if we do not have anymore remainingInstances
+        // or too few positive instances
+        // then return;
+        if(remainingInstances.size() == 0 || getNbPositive(remainingInstances) < MINIMUM_INSTANCES) {
 //            System.out.println("no more remainingInstances to work on");
+//            System.out.println("---------------");
 //            printRule(remainingInstances);
-            return 0;
+            return Collections.emptyList();
         }
 
 //        System.out.println("value=" + Math.abs(getNbPositive(remainingInstances) - getNbNegative(remainingInstances)) * 100 / remainingInstances.size());
 
         // if we do not hav anymore positive cases, then return
         if(getNbPositive(remainingInstances) == 0) {
-            return 0;
+//            System.out.println("no more positiv cases");
+//            System.out.println("---------------");
+            return Collections.emptyList();
         }
         // if the current entropy is lower than ENTROPY_THRESHOLD
         // we think this is sufficient
-        if(getEntropy(getNbPositive(remainingInstances), getNbNegative(remainingInstances)) < ENTROPY_THRESHOLD) {
-            printRule(remainingInstances);
-            return 1;
+        if(getEntropy(getNbPositive(remainingInstances), getNbNegative(remainingInstances)) < ENTROPY_THRESHOLD && getNbPositive(remainingInstances) > getNbNegative(remainingInstances)) {
+//            System.out.println("new rule");
+//            System.out.println("------rule---------");
+            return new ArrayList<String>(){{ add(getRule(remainingInstances)); }};
         }
 
         // if we do not have anymore attributes, then print the rule
         if(remainingAttributs.size() == 0) {
 //            System.out.println("no more attributs to work on");
 //            printRule(remainingInstances);
-            return 0;
+//            System.out.println("---------------");
+            return Collections.emptyList();
         }
 
 //        String mapAsString = this.litterals.keySet().stream()
@@ -71,12 +88,12 @@ public class Node {
         remainingAttributs.forEach(a -> setGain(a, remainingInstances));
         remainingAttributs = remainingAttributs
                 .stream()
-                .sorted(Comparator.comparingDouble(Attribut::getGain).reversed())
+                .sorted(Comparator.comparingDouble(Attribut::getGain))
                 .collect(Collectors.toList());
 
-//        System.out.println("after");
+//        System.out.println("sort");
 //        remainingAttributs.forEach(System.out::println);
-//        System.out.println("attribut chosen : " + remainingAttributs.get(0).getName());
+//        System.out.println("attribut chosen : " + remainingAttributs.get(0).getName() + " with gain=" + remainingAttributs.get(0).getGain());
 
         final Attribut currentAttribut = remainingAttributs.get(0);
 
@@ -84,12 +101,12 @@ public class Node {
         final List<Attribut> updatedAttributs = new ArrayList<>(remainingAttributs);
         updatedAttributs.remove(0);
 
-        int rulesFound = 0;
+        final List<String> rulesFound = new ArrayList<>();
         for(String value : currentAttribut.getValues()) {
             final Map<String, String> map = new HashMap<>(this.litterals);
             map.put(currentAttribut.getName(), value);
 
-            Node n = new Node(this, map, currentAttribut.getName() + "=" + value);
+            Node n = new Node(this, map);
             this.children.add(n);
 
             // update instances
@@ -101,7 +118,7 @@ public class Node {
             });
 
 
-            rulesFound += n.execute(updatedAttributs, updatedInstances);
+            rulesFound.addAll(n.execute(updatedAttributs, updatedInstances));
         }
 
         return rulesFound;
@@ -173,14 +190,15 @@ public class Node {
         return instances.size() - getNbPositive(instances);
     }
 
-    private void printRule(final List<Instance> instances) {
+    private String getRule(final List<Instance> instances) {
         String mapAsString = this.litterals.keySet().stream()
-                .map(key -> key + "=" + this.litterals.get(key))
-                .collect(Collectors.joining(", ", "{", "}"));
+                .map(key -> key + " = " + this.litterals.get(key))
+                .collect(Collectors.joining(" ET ", "", ""));
 
-        System.out.println("Rule:" + mapAsString
+        return "SI " + mapAsString
+                + " ALORS " + POSITIVE_ATTRIBUT + "=" + POSITIVE_VALUE
                 + ", Positives=" + getNbPositive(instances)
-        + ", Negatives=" + getNbNegative(instances));
+                + ", Negatives=" + getNbNegative(instances);
     }
 
     public Node getParent() {
