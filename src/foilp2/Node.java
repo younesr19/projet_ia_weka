@@ -59,7 +59,7 @@ public class Node {
         remainingAttributs.forEach(a -> setGain(a, remainingInstances));
         remainingAttributs = remainingAttributs
                 .stream()
-                .sorted(Comparator.comparingDouble(Attribut::getGain))
+                .sorted(Comparator.comparingDouble(Attribut::getGain).reversed())
                 .collect(Collectors.toList());
 
         final Attribut currentAttribut = remainingAttributs.get(0);

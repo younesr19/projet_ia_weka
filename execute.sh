@@ -25,6 +25,6 @@ else
     echo "Please use one of these two options : "
     echo "     ./execute.sh weather.nominal.arff"
     echo "or"
-    echo "     ./execute.sh weather.nominal.arff 0.55 0.005"
+    echo "     ./execute.sh weather.nominal.arff 0.5 0.005"
     exit 1
 fi

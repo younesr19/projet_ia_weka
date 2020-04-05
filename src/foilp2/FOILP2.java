@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class FOILP2 {
 
-    private static float ENTROPY_THRESHOLD = 0.55f;
+    private static float ENTROPY_THRESHOLD = 0.5f;
     private static float MINIMUM_INSTANCES = 0.005f; // in pourcentage
 
     private final String filename;
