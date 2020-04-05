@@ -36,7 +36,7 @@ public class Result {
 
         return "Rules : \n"
                 + str.toString() + "\n"
-                + "positive covered : " + positiveCovered + "(" + (positiveCovered * 100 / (float)totalPositives) + "%, we would like this close to 100% to cover most of positive instances)\n"
-                + "negative covered : " + negativeCovered + "(" + (negativeCovered * 100 / (float)totalNegatives) + "%, we would like this close to 0% to cover no negative instances)";
+                + "positive covered : " + positiveCovered + "(" + (positiveCovered * 100 / (float)totalPositives) + "%, we would like this to be close to 100% to cover most of positive instances)\n"
+                + "negative covered : " + negativeCovered + "(" + (negativeCovered * 100 / (float)totalNegatives) + "%, we would like this to be close to 0% to cover no negative instances)";
     }
 }
