@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Created by BOURIAUD Thomas & RAFIKI Younes
+
 FILE=projet_ia_weka.jar
 
 # test if file exists
