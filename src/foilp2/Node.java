@@ -25,7 +25,7 @@ public class Node {
         MINIMUM_INSTANCES_PER_LEAF = FOILP2.getMinimumInstances() * totalInstance;
         POSITIVE_ATTRIBUT = positiveAttribut;
         POSITIVE_VALUE = positiveValue;
-        this.result = result;
+        Node.result = result;
     }
 
     public void execute(List<Attribut> remainingAttributs, final List<Instance> remainingInstances) {
